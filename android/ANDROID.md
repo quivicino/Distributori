@@ -3,6 +3,8 @@
 È la versione Android dell'app iOS/CarPlay in `ios/`, fatta allo stesso modo:
 
 - **Sul telefono** si vede la web app pubblicata (`MainActivity`), così l'interfaccia resta una sola.
+  La WebView di Android non ha la lettura vocale del browser: `LetturaVocale.kt` la ricrea con la
+  sintesi vocale del telefono, così la voce *Lettura vocale* compare e funziona come nel browser.
 - **In auto** (`app/…/auto/`) si usano i modelli di schermata di Google per la categoria
   **Carburante** (*Fuel*):
   1. **Mappa** (`PlaceListMapTemplate`): i distributori più economici vicini, numerati e colorati

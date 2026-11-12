@@ -35,4 +35,5 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation("androidx.car.app:app:1.4.0")
+    implementation("androidx.webkit:webkit:1.12.1")
 }
