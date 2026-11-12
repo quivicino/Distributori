@@ -27,6 +27,9 @@ class MainActivity : Activity() {
         web.settings.javaScriptEnabled = true
         web.settings.domStorageEnabled = true
         web.settings.setGeolocationEnabled(true)
+        // Testo al 100%, come nel browser: senza questo la WebView ingrandisce tutto
+        // seguendo la dimensione dei caratteri scelta nelle impostazioni del telefono.
+        web.settings.textZoom = 100
         web.webChromeClient = object : WebChromeClient() {
             override fun onGeolocationPermissionsShowPrompt(origin: String, callback: GeolocationPermissions.Callback) {
                 callback.invoke(origin, true, false)
