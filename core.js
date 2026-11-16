@@ -43,8 +43,16 @@
   // Ogni voce in d.f: [categoria, nome, prezzo, self 1/0, data ISO]
   function prezzoDi(d, cat, modo) {
     const vuoleSelf = modo !== "servito" ? 1 : 0;
-    const v = (d.f || []).find((x) => x[0] === cat && x[3] === vuoleSelf);
+    const f = d.f || [];
+    let v = f.find((x) => x[0] === cat && x[3] === vuoleSelf);
+    // GPL e metano si fanno quasi sempre al servito: se manca il prezzo nel modo scelto, usa l'altro
+    if (!v && (cat === "L" || cat === "M")) v = f.find((x) => x[0] === cat);
     return v ? { prezzo: v[2], self: !!v[3], data: v[4] || null } : null;
+  }
+
+  // true se il distributore ha almeno un prezzo per quel carburante (self o servito)
+  function vende(d, cat) {
+    return (d.f || []).some((x) => x[0] === cat);
   }
 
   // Tabella dei prezzi per il riquadro: una riga per carburante con self e servito
@@ -94,8 +102,10 @@
     for (const d of lista || []) {
       const dist = distanza(lat, lon, d.la, d.lo);
       if (dist > raggio) continue;
+      // Chi non comunica prezzi di GPL o metano non li vende: non lo mostriamo
+      if ((cat === "L" || cat === "M") && !vende(d, cat)) continue;
       const p = prezzoDi(d, cat, modo);
-      out.push({ ...d, id: "d/" + d.i, distanza: dist, prezzo: p ? p.prezzo : null, dataPrezzo: p ? p.data : null, fascia: "nd" });
+      out.push({ ...d, id: "d/" + d.i, distanza: dist, prezzo: p ? p.prezzo : null, prezzoSelf: p ? p.self : null, dataPrezzo: p ? p.data : null, fascia: "nd" });
     }
     classifica(out);
     return out;
@@ -162,7 +172,7 @@
   }
 
   const API = {
-    distanza, formattaDistanza, minutiInAuto, CARBURANTI, formattaPrezzo, prezzoDi, tabellaPrezzi,
+    distanza, formattaDistanza, minutiInAuto, CARBURANTI, formattaPrezzo, prezzoDi, vende, tabellaPrezzi,
     giorniDa, quando, preparaDistributori, classifica, statistiche, tessereNelRaggio, titolo, capitalizza, indirizzo
   };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
