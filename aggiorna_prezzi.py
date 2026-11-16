@@ -45,7 +45,8 @@ PASSO = 0.25          # lato della tessera in gradi
 
 # Carburanti "normali": l'app li confronta tra distributori. Gli altri (premium, HVO…)
 # restano visibili nel riquadro con il loro nome.
-CATEGORIE = {"benzina": "B", "gasolio": "G", "gpl": "L", "metano": "M"}
+# "L-GNC" è metano per auto rifornito da gas liquefatto: per chi guida è metano come l'altro.
+CATEGORIE = {"benzina": "B", "gasolio": "G", "gpl": "L", "metano": "M", "l-gnc": "M"}
 
 
 # ---------- Download ----------

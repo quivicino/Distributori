@@ -261,8 +261,9 @@
     if (nome && nome.toLowerCase() !== tit.toLowerCase()) righe.push(`<p>${esc(nome)}</p>`);
     righe.push(`<p>${esc(ind)}</p>`);
     if (d.t) righe.push('<p><span class="tag autostrada">Autostrada</span></p>');
-    const modoTesto = stato.modo === "servito" ? "servito" : "self";
+    let modoTesto = stato.modo === "servito" ? "servito" : "self";
     if (d.prezzo != null) {
+      if (d.prezzoSelf != null) modoTesto = d.prezzoSelf ? "self" : "servito";
       righe.push(`<p class="pop-prezzo ${d.fascia}">${esc(nomeCarburante())} ${modoTesto} <b>${DL.formattaPrezzo(d.prezzo)}</b> €/${unita()}</p>`);
       voce.push(`${nomeCarburante()} ${modoTesto}: ${DL.formattaPrezzo(d.prezzo)} euro al ${unita() === "kg" ? "chilo" : "litro"}.`);
       if (d.fascia === "economico") voce.push("Tra i più economici in zona.");
