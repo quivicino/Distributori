@@ -171,9 +171,109 @@
     return [via, comune + (d.p ? " (" + d.p + ")" : "")].filter((x) => x.trim()).join(", ");
   }
 
+  // ---------- Percorso ----------
+  // Il percorso è una linea di punti [lat, lon]. Per trovare in fretta i distributori vicini alla strada
+  // ogni tratto viene messo in una griglia di celle da 0,02 gradi (circa 2 km).
+  const CELLA = 0.02;
+  function indicizzaPercorso(punti) {
+    const cum = [0];
+    for (let i = 1; i < punti.length; i++) {
+      cum.push(cum[i - 1] + distanza(punti[i - 1][0], punti[i - 1][1], punti[i][0], punti[i][1]));
+    }
+    const griglia = new Map();
+    for (let i = 0; i < punti.length - 1; i++) {
+      const [a0, b0] = punti[i], [a1, b1] = punti[i + 1];
+      for (let r = Math.floor(Math.min(a0, a1) / CELLA); r <= Math.floor(Math.max(a0, a1) / CELLA); r++) {
+        for (let c = Math.floor(Math.min(b0, b1) / CELLA); c <= Math.floor(Math.max(b0, b1) / CELLA); c++) {
+          const k = r + "_" + c;
+          if (!griglia.has(k)) griglia.set(k, []);
+          griglia.get(k).push(i);
+        }
+      }
+    }
+    return { punti, cum, griglia, lunghezza: cum[cum.length - 1] || 0 };
+  }
+
+  // Distanza del punto dalla strada e a che punto del percorso si trova (metri dalla partenza).
+  // null se è più lontano di "max" metri.
+  function vicinoAlPercorso(perc, lat, lon, max) {
+    const kLat = 111320, kLon = 111320 * Math.cos(lat * Math.PI / 180);
+    const dLat = max / kLat, dLon = max / kLon;
+    const visti = new Set();
+    let best = null;
+    for (let r = Math.floor((lat - dLat) / CELLA); r <= Math.floor((lat + dLat) / CELLA); r++) {
+      for (let c = Math.floor((lon - dLon) / CELLA); c <= Math.floor((lon + dLon) / CELLA); c++) {
+        for (const i of perc.griglia.get(r + "_" + c) || []) {
+          if (visti.has(i)) continue;
+          visti.add(i);
+          const [a0, b0] = perc.punti[i], [a1, b1] = perc.punti[i + 1];
+          // coordinate piane in metri attorno al distributore
+          const x0 = (b0 - lon) * kLon, y0 = (a0 - lat) * kLat;
+          const x1 = (b1 - lon) * kLon, y1 = (a1 - lat) * kLat;
+          const dx = x1 - x0, dy = y1 - y0, l2 = dx * dx + dy * dy;
+          let t = l2 ? -(x0 * dx + y0 * dy) / l2 : 0;
+          t = Math.max(0, Math.min(1, t));
+          const d = Math.hypot(x0 + t * dx, y0 + t * dy);
+          if (d <= max && (!best || d < best.dist)) {
+            best = { dist: d, lungo: perc.cum[i] + t * (perc.cum[i + 1] - perc.cum[i]) };
+          }
+        }
+      }
+    }
+    return best;
+  }
+
+  // Tessere del sito che coprono la striscia larga "fascia" metri attorno al percorso
+  function tesserePercorso(punti, fascia, passo) {
+    // Un controllo ogni ~1 km lungo la strada, allargato di 1 km: copre anche lo spazio tra due controlli
+    const nomi = new Set();
+    const aggiungi = (lat, lon) => tessereNelRaggio(lat, lon, fascia + 1000, passo).forEach((t) => nomi.add(t));
+    if (punti.length) aggiungi(punti[0][0], punti[0][1]);
+    let resto = 0;   // metri fatti dall'ultimo controllo
+    for (let i = 1; i < punti.length; i++) {
+      const [a0, b0] = punti[i - 1], [a1, b1] = punti[i];
+      const l = distanza(a0, b0, a1, b1);
+      let s = 1000 - resto;
+      while (s <= l) {
+        const t = s / l;
+        aggiungi(a0 + t * (a1 - a0), b0 + t * (b1 - b0));
+        s += 1000;
+      }
+      resto = l - (s - 1000);
+    }
+    if (punti.length > 1) aggiungi(punti[punti.length - 1][0], punti[punti.length - 1][1]);
+    return [...nomi];
+  }
+
+  // Distributori entro "fascia" metri dalla strada. "distanza" = quanto sono lontani dalla strada,
+  // "km" = a che chilometro del percorso si trovano.
+  function preparaPercorso(lista, perc, fascia, cat, modo) {
+    const out = [];
+    const visti = new Set();
+    for (const d of lista || []) {
+      if (visti.has(d.i)) continue;
+      const v = vicinoAlPercorso(perc, d.la, d.lo, fascia);
+      if (!v) continue;
+      if ((cat === "L" || cat === "M") && !vende(d, cat)) continue;
+      visti.add(d.i);
+      const p = prezzoDi(d, cat, modo);
+      out.push({ ...d, id: "d/" + d.i, distanza: v.dist, km: v.lungo / 1000, prezzo: p ? p.prezzo : null, prezzoSelf: p ? p.self : null, dataPrezzo: p ? p.data : null, fascia: "nd" });
+    }
+    classifica(out);
+    return out;
+  }
+
+  function formattaDurata(sec) {
+    const min = Math.max(1, Math.round(sec / 60));
+    if (min < 60) return min + " min";
+    const h = Math.floor(min / 60), m = min % 60;
+    return h + " h" + (m ? " " + m + " min" : "");
+  }
+
   const API = {
     distanza, formattaDistanza, minutiInAuto, CARBURANTI, formattaPrezzo, prezzoDi, vende, tabellaPrezzi,
-    giorniDa, quando, preparaDistributori, classifica, statistiche, tessereNelRaggio, titolo, capitalizza, indirizzo
+    giorniDa, quando, preparaDistributori, classifica, statistiche, tessereNelRaggio, titolo, capitalizza, indirizzo,
+    indicizzaPercorso, vicinoAlPercorso, tesserePercorso, preparaPercorso, formattaDurata
   };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else root.DL = API;

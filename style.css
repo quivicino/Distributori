@@ -428,3 +428,69 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .installa-dopo { border: 2px solid var(--bordo); background: var(--superficie); color: var(--testo-2); }
 .installa-ok { border: 0; background: var(--blu); color: var(--su-colore); }
 @media (prefers-reduced-motion: reduce) { .installa { animation: none; } }
+
+/* ---- Distributori sul percorso ---- */
+.fab[aria-pressed="true"] { background: var(--blu); color: var(--su-colore); }
+.raggio select:disabled { opacity: .45; }
+.percorso-barra {
+  position: absolute; left: 16px; right: 80px; top: 16px; z-index: 900;
+  display: flex; align-items: stretch; max-width: 520px;
+  border-radius: 24px; background: var(--superficie); box-shadow: var(--ombra); overflow: hidden;
+}
+.percorso-testo {
+  flex: 1; min-width: 0; border: 0; background: none; text-align: left;
+  padding: 0 4px 0 16px; min-height: 48px;
+  font: 600 15px/1.2 var(--font-body); color: var(--testo);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.percorso-esci {
+  flex: none; width: 48px; border: 0; background: none; color: var(--testo-2);
+  display: grid; place-items: center;
+}
+.percorso {
+  position: absolute; left: 12px; right: 12px; top: 12px; z-index: 1100;
+  max-width: 460px; margin: 0;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 14px 16px 12px; border-radius: 18px;
+  background: var(--superficie); color: var(--testo); box-shadow: var(--ombra);
+  animation: entra .2s ease-out;
+}
+.percorso-testa { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.percorso-testa h2 { margin: 0; font: 700 21px/1.1 var(--font-display); }
+.percorso-testa .chiudi { width: 38px; height: 38px; }
+.percorso-campi { display: flex; align-items: center; gap: 8px; }
+.percorso-righe { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.percorso .campo { display: flex; align-items: center; gap: 8px; }
+.percorso .campo input {
+  flex: 1; min-width: 0; height: 42px; padding: 0 12px;
+  border: 1px solid var(--bordo); border-radius: 10px;
+  background: var(--bg); color: var(--testo); font: 500 16px var(--font-body);
+}
+.percorso .campo input:focus { outline: 2px solid var(--blu); outline-offset: 0; background: var(--superficie); }
+.perc-inverti {
+  flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; background: var(--bg); color: var(--blu);
+}
+.perc-pin {
+  flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  font: 700 14px/1 var(--font-display); color: #fff; border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+.perc-pin.da { background: var(--libero); }
+.perc-pin.a { background: var(--pieno); }
+.percorso-opz { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; font-size: 14px; color: var(--testo-2); }
+.percorso-opz label { display: flex; align-items: center; gap: 8px; }
+.percorso-opz select {
+  height: 36px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--bordo);
+  background: var(--superficie); color: var(--testo); font: 600 15px var(--font-body);
+}
+.percorso-opz .spunta input { width: 20px; height: 20px; accent-color: var(--blu); margin: 0; }
+.btn-perc-vai {
+  height: 48px; border: 0; border-radius: 12px;
+  background: var(--blu); color: var(--su-colore); font: 700 18px/1 var(--font-display); letter-spacing: .02em;
+}
+.btn-perc-vai:disabled { opacity: .7; cursor: progress; }
+.perc-errore { margin: 0; color: var(--pieno); font-weight: 600; font-size: 14px; }
+.perc-nota { margin: 0; font-size: 12px; color: var(--testo-2); }
+.pop-vai.pop-tappa { background: var(--superficie); color: var(--blu); border: 2px solid var(--blu); margin-top: 8px; }
+@media (prefers-reduced-motion: reduce) { .percorso { animation: none; } }
