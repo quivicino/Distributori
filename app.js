@@ -760,9 +760,25 @@
   // ---------- Lettura vocale dei riquadri ----------
   let letturaAttiva = leggiPref("lettura", "1") !== "0";
   const sintesi = window.speechSynthesis;
+  // Sceglie la voce italiana migliore installata: Premium, poi Migliorata, poi la standard.
+  // Le voci "buffe" di iOS (Eddy, Nonna, Rocko...) vengono scartate.
+  function punteggioVoce(v) {
+    const id = ((v.voiceURI || "") + " " + (v.name || "")).toLowerCase();
+    if (/eloquence|novelty|eddy|flo\b|grandma|grandpa|nonna|nonno|reed|rocko|sandy|shelley/.test(id)) return -10;
+    let p = 0;
+    if (/premium/.test(id)) p += 30;
+    else if (/enhanced|migliorat|avanzat|neural|natural/.test(id)) p += 20;
+    else if (/siri/.test(id)) p += 15;
+    else if (/compact/.test(id)) p -= 5;
+    if (/^it[-_]it/i.test(v.lang)) p += 3;
+    if (v.localService) p += 1;
+    return p;
+  }
   function vocItaliana() {
-    const voci = sintesi ? sintesi.getVoices() : [];
-    return voci.find((v) => /^it[-_]IT/i.test(v.lang) && v.localService) || voci.find((v) => /^it/i.test(v.lang)) || null;
+    const voci = (sintesi ? sintesi.getVoices() : []).filter((v) => /^it/i.test(v.lang));
+    let migliore = null, pm = -Infinity;
+    for (const v of voci) { const p = punteggioVoce(v); if (p > pm) { pm = p; migliore = v; } }
+    return migliore;
   }
   function leggi(testo) {
     if (!sintesi || !testo) return;
