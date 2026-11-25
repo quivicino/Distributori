@@ -115,8 +115,8 @@
       </form>
 
       <div class="fab-azioni">
-        <button class="pill-azione verde" id="btn-economico" type="button" title="Il più conveniente in zona" aria-label="Mostra il distributore più conveniente in zona">+ Conveniente</button>
-        <button class="pill-azione blu" id="btn-vicino" type="button" title="Il più vicino" aria-label="Mostra il distributore più vicino">Più vicino</button>
+        <button class="pill-azione verde" id="btn-economico" type="button" title="Prezzo più basso in zona" aria-label="Mostra il distributore con il prezzo più basso in zona">Prezzo più basso</button>
+        <button class="pill-azione blu" id="btn-vicino" type="button" title="Il più vicino" aria-label="Mostra il distributore più vicino">Distributore più vicino</button>
       </div>
     </main>
 
@@ -141,6 +141,9 @@
           <span><b>Installa l'app</b><small>Metti l'icona di Qui-Distributori sulla schermata Home</small></span>
         </button>
 
+        <details class="impostazioni" id="impostazioni">
+          <summary>IMPOSTAZIONI <small id="imp-riassunto"></small></summary>
+          <div class="impostazioni-righe">
         <label class="auto" for="modo">
           <span>PREZZO</span>
           <select id="modo">
@@ -184,6 +187,8 @@
             <option value="0">Spenta</option>
           </select>
         </label>
+          </div>
+        </details>
 
         <div class="sommario" id="sommario">
           <div class="kpi kpi-reale"><b id="k-min">–</b><span>prezzo più<br>basso <small id="k-unita">€/l</small></span></div>
@@ -236,7 +241,7 @@
             <li><span class="g-segno"><span class="mk prezzo medio">1,779</span></span><div><b>Giallo</b>: prezzo nella media della zona.</div></li>
             <li><span class="g-segno"><span class="mk prezzo caro">1,849</span></span><div><b>Rosso</b>: tra i più cari in zona.</div></li>
             <li><span class="g-segno"><span class="mk prezzo economico top">1,719</span></span><div><b>Bordo verde</b>: il più economico di tutti entro il raggio.</div></li>
-            <li><span class="g-segno"><span class="mk prezzo medio vecchio">1,759</span></span><div><b>Bordo tratteggiato, più chiaro</b>: il gestore non aggiorna il prezzo da più di 7 giorni, potrebbe non essere più valido. I prezzi più vecchi di 10 giorni vanno sempre in fondo all'elenco e non vengono scelti da <b>+ Conveniente</b> e <b>Più vicino</b>, se ce ne sono di più recenti.</div></li>
+            <li><span class="g-segno"><span class="mk prezzo medio vecchio">1,759</span></span><div><b>Bordo tratteggiato, più chiaro</b>: il gestore non aggiorna il prezzo da più di 7 giorni, potrebbe non essere più valido. I prezzi più vecchi di 10 giorni vanno sempre in fondo all'elenco e non vengono scelti da <b>Prezzo più basso</b> e <b>Distributore più vicino</b>, se ce ne sono di più recenti.</div></li>
             <li><span class="g-segno"><span class="mk nd"></span></span><div><b>Quadratino grigio</b>: distributore che non ha comunicato il prezzo del carburante scelto (o non lo vende).</div></li>
             <li><span class="g-segno"><span class="io"></span></span><div><b>Punto azzurro</b>: sei tu. Il <b>cono azzurro</b> mostra dove è rivolto il telefono (su iPhone tocca il pulsante della posizione e consenti <i>Movimento e orientamento</i>). Il <b>cerchio tratteggiato</b> è il raggio di ricerca.</div></li>
           </ul>
@@ -257,15 +262,15 @@
             <li><span class="g-segno"><span class="g-fab nero"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.6" fill="currentColor"/><circle cx="4.5" cy="12" r="1.6" fill="currentColor"/><circle cx="4.5" cy="18" r="1.6" fill="currentColor"/></svg></span></span><div><b>Elenco</b>: apre la pagina con tutti i distributori vicini e le impostazioni.</div></li>
             <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Aggiorna</b>: riscarica subito i prezzi.</div></li>
             <li><span class="g-segno"><span class="btn-help g-help">HELP</span></span><div><b>HELP</b> (in alto nella pagina Elenco, accanto alla X): apre questa pagina.</div></li>
-            <li><span class="g-segno"><span class="g-pill verde">+ Conveniente</span></span><div><b>+ Conveniente</b>: porta la mappa sul distributore più conveniente entro il raggio e ne apre il riquadro.</div></li>
-            <li><span class="g-segno"><span class="g-pill blu">Più vicino</span></span><div><b>Più vicino</b>: porta la mappa sul distributore più vicino che ha il prezzo del carburante scelto.</div></li>
+            <li><span class="g-segno"><span class="g-pill verde">Prezzo più basso</span></span><div><b>Prezzo più basso</b>: porta la mappa sul distributore più economico entro il raggio e ne apre il riquadro.</div></li>
+            <li><span class="g-segno"><span class="g-pill blu">Distributore più vicino</span></span><div><b>Distributore più vicino</b>: porta la mappa sul distributore più vicino che ha il prezzo del carburante scelto.</div></li>
           </ul>
           <p>Per ingrandire o rimpicciolire la mappa usa due dita.</p>
         </section>
 
         <section id="g-elenco">
           <h3>La pagina Elenco e le impostazioni</h3>
-          <p>In alto una riga dice cosa sta facendo l'app e di che giorno sono i prezzi.</p>
+          <p>In alto una riga dice cosa sta facendo l'app e di che giorno sono i prezzi. Le cinque impostazioni qui sotto stanno nel pulsante <b>IMPOSTAZIONI</b>: toccalo per aprirle o richiuderle.</p>
           <dl class="g-def">
             <dt>PREZZO</dt>
             <dd><b>Self</b> o <b>Servito</b>: quale prezzo mostrare e confrontare.</dd>

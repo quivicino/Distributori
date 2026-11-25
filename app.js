@@ -884,6 +884,15 @@
   document.addEventListener("visibilitychange", aggiornaSchermoAcceso);
   document.addEventListener("pointerdown", () => { if (autoAttivo && !bloccoSchermo) aggiornaSchermoAcceso(); }, { passive: true });
 
+  // Riassunto delle impostazioni sul pulsante chiuso, es. "Self · 120 s · Suoni sì"
+  function riassuntoImpostazioni() {
+    const testo = (id) => { const s = $(id); return s && s.selectedOptions[0] ? s.selectedOptions[0].textContent : ""; };
+    const auto = $("auto-refresh").value === "0" ? "refresh spento" : $("auto-refresh").value + " s";
+    $("imp-riassunto").textContent = [testo("modo"), auto, testo("sfondo")].join(" · ");
+  }
+  for (const id of ["modo", "auto-refresh", "suoni", "sfondo", "lettura"]) $(id).addEventListener("change", riassuntoImpostazioni);
+  setTimeout(riassuntoImpostazioni, 0);
+
   let secAuto = cfg.autoRefreshSecondi ?? 120;
   const salvato = leggiPref("auto", null);
   if (salvato !== null && ["0", "30", "60", "120"].includes(salvato)) secAuto = +salvato;

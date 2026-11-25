@@ -536,3 +536,24 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .g-pill { display: inline-grid; place-items: center; height: 26px; padding: 0 10px; border-radius: 999px; color: #fff; font: 700 12px var(--font-display); white-space: nowrap; }
 .g-pill.verde { background: var(--libero); }
 .g-pill.blu { background: #0d0cf2; }
+/* Impostazioni dell'Elenco in un pulsante che si apre e si richiude (chiuso all'avvio) */
+.impostazioni { border-radius: 12px; background: var(--bg); }
+.impostazioni > summary {
+  display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px;
+  border-radius: 12px; cursor: pointer; list-style: none;
+  font: 700 15px/1 var(--font-display); letter-spacing: .06em; color: var(--blu);
+}
+.impostazioni > summary::-webkit-details-marker { display: none; }
+.impostazioni > summary::after {
+  content: ""; margin-left: auto; width: 10px; height: 10px; flex: none;
+  border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor;
+  transform: translateY(-3px) rotate(45deg); transition: transform .2s;
+}
+.impostazioni[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+.impostazioni > summary small {
+  font: 500 13px/1.2 var(--font-body); letter-spacing: 0; color: var(--testo-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+}
+.impostazioni[open] > summary small { display: none; }
+.impostazioni-righe { display: flex; flex-direction: column; gap: 8px; padding: 0 8px 8px; }
+.impostazioni-righe .auto { background: var(--superficie); }
