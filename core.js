@@ -111,16 +111,25 @@
     return out;
   }
 
-  function classifica(lista) {
-    const con = lista.filter((d) => d.prezzo != null).sort((a, b) => a.prezzo - b.prezzo);
+  // Prezzo più vecchio di "giorni" (default 10): va sempre in fondo alle classifiche
+  function inFondo(d, giorni, oggi) {
+    const g = giorniDa(d.dataPrezzo, oggi);
+    return g != null && g > (giorni == null ? 10 : giorni);
+  }
+
+  function classifica(lista, giorni) {
+    // Le fasce si calcolano sui prezzi recenti; quelli vecchi non spostano le soglie
+    const tutti = lista.filter((d) => d.prezzo != null);
+    const recenti = tutti.filter((d) => !inFondo(d, giorni));
+    const con = (recenti.length ? recenti : tutti).slice().sort((a, b) => a.prezzo - b.prezzo);
     const n = con.length;
     if (!n) return lista;
     const min = con[0].prezzo, max = con[n - 1].prezzo;
     // Soglie a un terzo e due terzi della classifica; a parità di prezzo stessa fascia
     const soglia1 = con[Math.floor((n - 1) / 3)].prezzo;
     const soglia2 = con[Math.ceil(2 * (n - 1) / 3)].prezzo;
-    for (const d of con) {
-      if (max - min < 0.0005) d.fascia = "economico";        // tutti uguali
+    for (const d of tutti) {
+      if (max - min < 0.0005) d.fascia = d.prezzo <= min + 0.0005 ? "economico" : "caro"; // tutti uguali
       else if (d.prezzo <= soglia1) d.fascia = "economico";
       else if (d.prezzo >= soglia2 && d.prezzo > soglia1) d.fascia = "caro";
       else d.fascia = "medio";
@@ -272,7 +281,7 @@
 
   const API = {
     distanza, formattaDistanza, minutiInAuto, CARBURANTI, formattaPrezzo, prezzoDi, vende, tabellaPrezzi,
-    giorniDa, quando, preparaDistributori, classifica, statistiche, tessereNelRaggio, titolo, capitalizza, indirizzo,
+    giorniDa, inFondo, quando, preparaDistributori, classifica, statistiche, tessereNelRaggio, titolo, capitalizza, indirizzo,
     indicizzaPercorso, vicinoAlPercorso, tesserePercorso, preparaPercorso, formattaDurata
   };
   if (typeof module !== "undefined" && module.exports) module.exports = API;

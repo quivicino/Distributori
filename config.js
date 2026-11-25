@@ -3,7 +3,7 @@
  */
 window.DISTRIBUTORI_CONFIG = {
   // Versione dell'app, mostrata in fondo alla pagina Elenco. Aumentala a ogni aggiornamento.
-  versione: "18",
+  versione: "19",
 
   // Raggio di ricerca iniziale in metri (modificabile anche dall'app)
   raggioMetri: 5000,
@@ -17,6 +17,8 @@ window.DISTRIBUTORI_CONFIG = {
 
   // Un prezzo non aggiornato da più di questi giorni viene segnalato come "vecchio"
   giorniPrezzoVecchio: 7,
+  // Un prezzo più vecchio di questi giorni va sempre in fondo alle classifiche
+  giorniInFondo: 10,
 
   // Auto-refresh predefinito in secondi (0 = spento). Si cambia anche dalla pagina elenco.
   autoRefreshSecondi: 120
