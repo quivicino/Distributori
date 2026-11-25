@@ -557,3 +557,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .impostazioni[open] > summary small { display: none; }
 .impostazioni-righe { display: flex; flex-direction: column; gap: 8px; padding: 0 8px 8px; }
 .impostazioni-righe .auto { background: var(--superficie); }
+/* v20: pulsanti in alto con il bordino bianco come quelli in basso */
+.barra-btn, .raggio select, .carb select { box-shadow: 0 0 0 2px rgba(255,255,255,.9); }
+/* v20: pulsanti in basso con lo sfondo semitrasparente (si intravede la mappa), testo bianco pieno */
+.pill-azione, .pill-azione:disabled { opacity: 1; color: #fff; }
+.pill-azione.verde { background: rgba(21, 128, 90, .72); }
+.pill-azione.blu { background: rgba(13, 12, 242, .72); }
+.pill-azione:disabled.verde { background: rgba(21, 128, 90, .45); }
+.pill-azione:disabled.blu { background: rgba(13, 12, 242, .45); }
